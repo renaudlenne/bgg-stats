@@ -4,15 +4,18 @@
     <title>BGG stats generator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js'></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js"></script>
+    <script>vex.defaultOptions.className = 'vex-theme-os'</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-os.min.css" />
 </head>
 <body>
     <canvas id="chart" width="600" height="400"></canvas>
     <script>
         // bar chart data
         var barData = {
-            labels : [{% for item in labels %}
-        "{{item}}",
-        {% endfor %}],
+            labels : [{% for item in values.keys() %}"{{item}}", {% endfor %}],
         datasets : [
             {
                 label: "{{title}}",
@@ -20,15 +23,19 @@
                 backgroundColor:"rgba(75, 192, 192, 0.2)",
                 borderColor:"rgb(75, 192, 192)",
                 borderWidth:1,
-                data : [{% for item in values %}
-            {{item}},
-        {% endfor %}]
+                data : [{% for item in values.values() %}{{item}}, {% endfor %}]
         }
         ]
         }
 
         // get bar chart canvas
         var ctx = document.getElementById("chart").getContext("2d");
+
+        var games = {
+        {% for cat_idx, games_for_cat in games.items() %}
+            "{{cat_idx}}": "{{ '<br/>'.join(games_for_cat) | safe }}",
+        {% endfor %}
+        };
 
         // draw bar chart
         new Chart(ctx, {
@@ -38,7 +45,10 @@
                 scales: {xAxes: [{
                     gridLines: {offsetGridLines: false},
                     ticks: {beginAtZero: true}
-                }]}
+                }]},
+                onClick: function(event, model) {
+                    vex.dialog.alert({ unsafeMessage: games[model[0]._model.label] });
+                }
             }
         });
 

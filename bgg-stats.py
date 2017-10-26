@@ -25,8 +25,8 @@ def sort(d):
     return OrderedDict(sorted(d.items(), key=lambda t: t[1], reverse=True))
 
 
-def generate_chart(values, title):
-    return render_template('horizontal-bar-chart.html', values=values.values(), labels=values.keys(), title=title)
+def generate_chart(values, title, games):
+    return render_template('horizontal-bar-chart.html', values=values, title=title, games=games)
 
 
 def fetch_user_data(username):
@@ -39,6 +39,8 @@ def fetch_user_data(username):
 
     categories = defaultdict(int)
     mechanics = defaultdict(int)
+    games_by_mechanics = defaultdict(list)
+    games_by_categories = defaultdict(list)
 
     for chunk in chunks(coll_items, 15):
         request_item_ids = ','.join((item.attrib['objectid'] for item in chunk))
@@ -49,24 +51,26 @@ def fetch_user_data(username):
             item_name = item.find('name').attrib['value']
             for category in item.findall('link[@type="boardgamecategory"]'):
                 cat_name = category.attrib['value']
+                games_by_categories[cat_name].append(item_name)
                 categories[cat_name] += 1
             for mechanic in item.findall('link[@type="boardgamemechanic"]'):
                 mech_name = mechanic.attrib['value']
+                games_by_mechanics[mech_name].append(item_name)
                 mechanics[mech_name] += 1
 
-    return categories, mechanics
+    return categories, mechanics, games_by_mechanics, games_by_categories
 
 
 @app.route('/mechanics/<username>')
 def mechanics_chart(username):
-    categories, mechanics = fetch_user_data(username)
-    return generate_chart(sort(mechanics), "Mechanics")
+    categories, mechanics, games_by_mechanics, games_by_categories = fetch_user_data(username)
+    return generate_chart(sort(mechanics), "Mechanics", games_by_mechanics)
 
 
 @app.route('/categories/<username>')
 def categories_chart(username):
-    categories, mechanics = fetch_user_data(username)
-    return generate_chart(sort(categories), "Categories")
+    categories, mechanics, games_by_mechanics, games_by_categories = fetch_user_data(username)
+    return generate_chart(sort(categories), "Categories", games_by_categories)
 
 @app.route('/')
 def homepage():
