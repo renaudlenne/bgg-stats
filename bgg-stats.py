@@ -33,7 +33,8 @@ def fetch_user_data(username):
     url = 'https://boardgamegeek.com/xmlapi2/collection?username=%s&excludesubtype=boardgameexpansion&wanttoplay=0&wishlist=0' % username
     xml_obj = parse_xml(url)
     if xml_obj.tag == 'message':
-        # Request is probably being queued, try again
+        # Request is probably being queued, try again later
+        sleep(2)
         xml_obj = parse_xml(url)
     coll_items = xml_obj.findall('item')
 
