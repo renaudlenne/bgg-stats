@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BGG stats generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<form id="form" action="#" onsubmit="getStats();">
+    <label for="username">BGG Username:&nbsp;</label>
+    <input type="text" name="username" id="username" value=""><br>
+    <button type="submit" id="stats_button" >Get some stats!</button><br />
+</form>
+<div id="loader" style="display: none;">
+    Loading...
+</div>
+<script language="javascript">
+    function getStats() {
+        var iframe = document.getElementById("resultIframe");
+        var username = document.getElementById("username").value;
+        var loader = document.getElementById("loader");
+        var form = document.getElementById("form");
+        form.style.display = "none";
+        loader.style.display = "block";
+        iframe.src = "mechanics/"+username;
+        iframe.onload= function() {
+            loader.style.display = "none";
+            window.history.pushState(iframe.src,"", iframe.src);
+        };
+    }
+</script>
+<iframe  src="" frameBorder="0" seamless='seamless' name="resultIframe" id="resultIframe" scrolling="no" style="border: none; width: 100%; height: -webkit-fill-available; height: -moz-available;">
+    <p>iframes are not supported by your browser.</p>
+</iframe>
+</body>
+</html>

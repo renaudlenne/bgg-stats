@@ -70,49 +70,7 @@ def categories_chart(username):
 
 @app.route('/')
 def homepage():
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>BGG stats generator</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-    <div id="form">
-        <label for="username">BGG Username:&nbsp;</label>
-        <input type="text" name="username" id="username" value=""><br>
-        <a href="#" id="stats_button" onClick="getStats();" >Get some stats!</a><br />
-    </div>
-    <div id="loader" style="display: none;">
-        Loading...
-    </div>
-    <script language="javascript">
-        document.getElementById("username")
-            .addEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode === 13) {
-                document.getElementById("stats_button").click();
-            }
-        });
-
-        function getStats() {
-            var iframe = document.getElementById("resultIframe");
-            var username = document.getElementById("username").value;
-            var loader = document.getElementById("loader");
-            var form = document.getElementById("form");
-            form.style.display = "none"
-            loader.style.display = "block"
-            iframe.src = "mechanics/"+username;
-            iframe.onload= function() {
-                loader.style.display = "none"
-                window.history.pushState(iframe.src,"", iframe.src);
-            };
-        }
-    </script>
-    <iframe  src="" frameBorder="0" seamless='seamless' name="resultIframe" id="resultIframe" scrolling="no" style="border: none; width: 100%; height: -webkit-fill-available;">
-        <p>iframes are not supported by your browser.</p>
-    </iframe>
-</body>
-</html>"""
+    render_template("home.html")
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')
