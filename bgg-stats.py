@@ -1,11 +1,11 @@
 from flask import Flask
+from flask import render_template
 from collections import defaultdict
+from collections import OrderedDict
 import certifi
 import urllib3
 import time
 import xml.etree.ElementTree
-import matplotlib.pyplot as plt
-import mpld3
 
 app = Flask(__name__)
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
@@ -21,16 +21,12 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
+def sort(d):
+    return OrderedDict(sorted(d.items(), key=lambda t: t[1], reverse=True))
+
 
 def generate_chart(values, title):
-    fig, ax = plt.subplots()
-    fig.suptitle(title)
-    fig.set_size_inches(10, 10)
-    ax.barh(range(len(values)), values.values(), align='center', color='blue')
-    ax.set_yticks(range(len(values)))
-    ax.set_yticklabels(values.keys())
-
-    return mpld3.fig_to_html(fig, template_type="simple")
+    return render_template('horizontal-bar-chart.html', values=values.values(), labels=values.keys(), title=title)
 
 
 def fetch_user_data(username):
@@ -51,7 +47,6 @@ def fetch_user_data(username):
 
         for item in items:
             item_name = item.find('name').attrib['value']
-            print("Filling details for item: '%s'" % item_name)
             for category in item.findall('link[@type="boardgamecategory"]'):
                 cat_name = category.attrib['value']
                 categories[cat_name] += 1
@@ -65,13 +60,13 @@ def fetch_user_data(username):
 @app.route('/mechanics/<username>')
 def mechanics_chart(username):
     categories, mechanics = fetch_user_data(username)
-    return generate_chart(mechanics, "Mechanics")
+    return generate_chart(sort(mechanics), "Mechanics")
 
 
 @app.route('/categories/<username>')
 def categories_chart(username):
     categories, mechanics = fetch_user_data(username)
-    return generate_chart(categories, "Categories")
+    return generate_chart(sort(categories), "Categories")
 
 @app.route('/')
 def homepage():

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BGG stats generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js'></script>
+</head>
+<body>
+    <canvas id="chart" width="600" height="400"></canvas>
+    <script>
+        // bar chart data
+        var barData = {
+            labels : [{% for item in labels %}
+        "{{item}}",
+        {% endfor %}],
+        datasets : [
+            {
+                label: "{{title}}",
+                fill:false,
+                backgroundColor:"rgba(75, 192, 192, 0.2)",
+                borderColor:"rgb(75, 192, 192)",
+                borderWidth:1,
+                data : [{% for item in values %}
+            {{item}},
+        {% endfor %}]
+        }
+        ]
+        }
+
+        // get bar chart canvas
+        var ctx = document.getElementById("chart").getContext("2d");
+
+        // draw bar chart
+        new Chart(ctx, {
+            type: 'horizontalBar',
+            data: barData,
+            options: {
+                scales: {xAxes: [{
+                    gridLines: {offsetGridLines: false},
+                    ticks: {beginAtZero: true}
+                }]}
+            }
+        });
+
+    </script>
+</body>
+</html>
