@@ -13,6 +13,18 @@
             <input type="text" name="username" id="username" required="required"/>
             <label class="control-label" for="username">BoardGameGeek username</label><i class="bar"></i>
         </div>
+        <div class="form-radio">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="stats_type" value="mechanics" checked="checked"/><i class="helper"></i>Group by mechanics
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="stats_type" value="categories"/><i class="helper"></i>Group by categories
+                </label>
+            </div>
+        </div>
         <div class="button-container">
             <button class="button" type="submit"><span>Get some stats!</span></button>
         </div>
@@ -27,7 +39,8 @@
 
     function getStats() {
         var username = document.getElementById("username").value;
-        window.location.href = "mechanics/" + username;
+        var stats_type = document.querySelector('input[name="stats_type"]:checked').value;
+        window.location.href = stats_type + "/" + username;
     }
 </script>
 </body>
