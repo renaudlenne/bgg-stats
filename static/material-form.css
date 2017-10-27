@@ -1,4 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
 body,
 input,
 select,
