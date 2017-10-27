@@ -21,21 +21,28 @@
     }
 
     function getStats() {
-        var iframe = document.getElementById("resultIframe");
         var username = document.getElementById("username").value;
         var loader = document.getElementById("loader");
         var form = document.getElementById("form");
         form.style.display = "none";
         loader.style.display = "block";
-        iframe.src = "mechanics/"+username;
-        iframe.onload= function() {
-            loader.style.display = "none";
-            window.history.pushState(iframe.src,"", iframe.src);
+
+        var url = "mechanics/"+username;
+        var xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4) {
+                loader.style.display = "none";
+                document.open();
+                document.write(xmlhttp.responseText);
+                document.close();
+            }
         };
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+        window.history.pushState(url,"", url);
     }
 </script>
-<iframe  src="" frameBorder="0" seamless='seamless' name="resultIframe" id="resultIframe" scrolling="no" style="border: none; width: 100%; height: -webkit-fill-available; height: -moz-available;">
-    <p>iframes are not supported by your browser.</p>
-</iframe>
 </body>
 </html>
