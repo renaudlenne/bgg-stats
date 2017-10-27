@@ -3,15 +3,25 @@
 <head>
     <title>BGG stats generator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="static/material-form.css" />
+    <link rel="stylesheet" href="static/loader.css" />
 </head>
 <body>
-<form id="form" onsubmit="return formSubmit(event);">
-    <label for="username">BGG Username:&nbsp;</label>
-    <input type="text" name="username" id="username" value=""><br>
-    <button type="submit" id="stats_button" >Get some stats!</button><br />
-</form>
-<div id="loader" style="display: none;">
-    Loading...
+<div class="container" style="min-height: 400px;">
+    <form id="form" onsubmit="return formSubmit(event);">
+        <h1>BGG statistics generator</h1>
+        <div class="form-group">
+            <input type="text" name="username" id="username" required="required"/>
+            <label class="control-label" for="username">BoardGameGeek username</label><i class="bar"></i>
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit"><span>Get some stats!</span></button>
+        </div>
+    </form>
+    <div id="loader" style="display: none;">
+        <h1>Generating statistics for <span id="gen-username"></span></h1>
+        <div class="loader">Loading...</div>
+    </div>
 </div>
 <script language="javascript">
     function formSubmit(evt) {
@@ -24,6 +34,8 @@
         var username = document.getElementById("username").value;
         var loader = document.getElementById("loader");
         var form = document.getElementById("form");
+        var loader_username = document.getElementById("gen-username");
+        loader_username.textContent = username;
         form.style.display = "none";
         loader.style.display = "block";
 
