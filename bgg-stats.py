@@ -21,6 +21,18 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
+def release_dates_filled(init_d):
+    d = sort(init_d, reverse=False, by_value=False)
+    keys_list = list(d.keys())
+    first_year = int(keys_list[0])
+    last_year = int(keys_list[len(d.keys())-1])
+    year_list = list(range(first_year, last_year+1))
+    result = []
+    for year in year_list:
+        year_val = d[str(year)] if str(year) in d else 0
+        result.append((year, year_val))
+    return OrderedDict(result)
+
 def sort(d, reverse=True, by_value=True):
     return OrderedDict(sorted(d.items(), key=lambda t: t[1 if by_value else 0], reverse=reverse))
 
@@ -80,7 +92,7 @@ def mechanics_page(username):
 @app.route('/api/release_year/<username>')
 def release_year_chart(username):
     categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published = fetch_user_data(username)
-    return generate_chart(sort(year_published, reverse=False, by_value=False), "Release year", games_by_year_published, horizontal=False)
+    return generate_chart(release_dates_filled(year_published), "Release year", games_by_year_published, horizontal=False)
 
 @app.route('/release_year/<username>')
 def release_year_page(username):
