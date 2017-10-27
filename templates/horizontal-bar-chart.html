@@ -47,7 +47,9 @@
                     ticks: {beginAtZero: true}
                 }]},
                 onClick: function(event, model) {
-                    vex.dialog.alert({ unsafeMessage: games[model[0]._model.label] });
+                    if (model.length) {
+                        vex.dialog.alert({ unsafeMessage: games[model[0]._model.label] });
+                    }
                 }
             }
         });
