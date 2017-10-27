@@ -62,16 +62,23 @@ def fetch_user_data(username):
     return categories, mechanics, games_by_mechanics, games_by_categories
 
 
-@app.route('/mechanics/<username>')
+@app.route('/api/mechanics/<username>')
 def mechanics_chart(username):
     categories, mechanics, games_by_mechanics, games_by_categories = fetch_user_data(username)
     return generate_chart(sort(mechanics), "Mechanics", games_by_mechanics)
 
+@app.route('/mechanics/<username>')
+def mechanics_page(username):
+    return render_template("stats_loader.html", stats_name="mechanics", username=username)
 
-@app.route('/categories/<username>')
+@app.route('/api/categories/<username>')
 def categories_chart(username):
     categories, mechanics, games_by_mechanics, games_by_categories = fetch_user_data(username)
     return generate_chart(sort(categories), "Categories", games_by_categories)
+
+@app.route('/mechanics/<username>')
+def categories_page(username):
+    return render_template("stats_loader.html", stats_name="categories", username=username)
 
 @app.route('/')
 def homepage():

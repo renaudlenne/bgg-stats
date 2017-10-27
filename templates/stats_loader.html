@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BGG stats generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/static/material-form.css" />
+    <link rel="stylesheet" href="/static/loader.css" />
+
+    <!-- Pre-loading Chart.js and vex to ease transitioning !-->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-os.min.css" />
+</head>
+<body onload="getStats();">
+<div class="container" style="min-height: 400px;">
+    <div id="loader">
+        <h1>Generating statistics for {{username}}</h1>
+        <div class="loader">Loading...</div>
+    </div>
+</div>
+<script language="javascript">
+    function getStats() {
+        var url = "/api/{{stats_name}}/{{username}}";
+        var xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4) {
+                document.open();
+                document.write(xmlhttp.responseText);
+                document.close();
+            }
+        };
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+</script>
+</body>
+</html>

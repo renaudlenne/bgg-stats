@@ -3,8 +3,7 @@
 <head>
     <title>BGG stats generator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="static/material-form.css" />
-    <link rel="stylesheet" href="static/loader.css" />
+    <link rel="stylesheet" href="/static/material-form.css" />
 </head>
 <body>
 <div class="container" style="min-height: 400px;">
@@ -18,10 +17,6 @@
             <button class="button" type="submit"><span>Get some stats!</span></button>
         </div>
     </form>
-    <div id="loader" style="display: none;">
-        <h1>Generating statistics for <span id="gen-username"></span></h1>
-        <div class="loader">Loading...</div>
-    </div>
 </div>
 <script language="javascript">
     function formSubmit(evt) {
@@ -32,28 +27,7 @@
 
     function getStats() {
         var username = document.getElementById("username").value;
-        var loader = document.getElementById("loader");
-        var form = document.getElementById("form");
-        var loader_username = document.getElementById("gen-username");
-        loader_username.textContent = username;
-        form.style.display = "none";
-        loader.style.display = "block";
-
-        var url = "mechanics/"+username;
-        var xmlhttp;
-        xmlhttp=new XMLHttpRequest();
-        xmlhttp.onreadystatechange=function()
-        {
-            if (xmlhttp.readyState==4) {
-                loader.style.display = "none";
-                document.open();
-                document.write(xmlhttp.responseText);
-                document.close();
-            }
-        };
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
-        window.history.pushState(url,"", url);
+        window.location.href = "mechanics/" + username;
     }
 </script>
 </body>
