@@ -34,7 +34,7 @@ def fetch_user_data(username):
     xml_obj = parse_xml(url)
     if xml_obj.tag == 'message':
         # Request is probably being queued, try again later
-        sleep(2)
+        time.sleep(2)
         xml_obj = parse_xml(url)
     coll_items = xml_obj.findall('item')
 
