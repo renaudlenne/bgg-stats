@@ -39,7 +39,7 @@
 
         // draw bar chart
         new Chart(ctx, {
-            type: 'horizontalBar',
+            type: {% if horizontal %}'horizontalBar'{% else %}'bar'{% endif %},
             data: barData,
             options: {
                 scales: {xAxes: [{
