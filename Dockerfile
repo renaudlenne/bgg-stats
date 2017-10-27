@@ -12,5 +12,6 @@ RUN  pip3 install flask certifi urllib3
 
 ADD bgg-stats.py /
 ADD templates /templates
+ADD static /static
 EXPOSE 5000
 CMD [ "python3", "./bgg-stats.py" ]
