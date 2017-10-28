@@ -21,6 +21,12 @@ def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
+def first_elem(d, n):
+    res = {}
+    for key in list(d)[0:n]:
+        res[key] = d[key]
+    return res
+
 def release_dates_filled(init_d):
     d = sort(init_d, reverse=False, by_value=False)
     keys_list = list(d.keys())
@@ -56,6 +62,7 @@ def fetch_user_data(username):
     games_by_mechanics = defaultdict(list)
     games_by_categories = defaultdict(list)
     games_by_year_published = defaultdict(list)
+    nb_games = len(coll_items)
 
     for chunk in chunks(coll_items, 15):
         request_item_ids = ','.join((item.attrib['objectid'] for item in chunk))
@@ -76,37 +83,69 @@ def fetch_user_data(username):
                 games_by_mechanics[mech_name].append(item_name)
                 mechanics[mech_name] += 1
 
-    return categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published
+    return categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published, nb_games
 
 
 @app.route('/api/mechanics/<username>')
 def mechanics_chart(username):
-    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published = fetch_user_data(username)
+    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published, nb_games = fetch_user_data(username)
     return generate_chart(sort(mechanics), "Mechanics", games_by_mechanics)
 
 @app.route('/mechanics/<username>')
 def mechanics_page(username):
-    return render_template("stats_loader.html", stats_name="mechanics", username=username)
+    return render_template("stats_loader.html", url="/api/mechanics/%s" % username, title=username)
+
+
+@app.route('/api/versus/<username1>/<username2>')
+def versus_chart(username1, username2):
+    categories1, mechanics1, year_published1, games_by_mechanics1, games_by_categories1, games_by_year_published1, nb_games1 = fetch_user_data(username1)
+    categories2, mechanics2, year_published2, games_by_mechanics2, games_by_categories2, games_by_year_published2, nb_games2 = fetch_user_data(username2)
+    top10_1 = first_elem(sort(mechanics1), 10)
+    top10_2 = first_elem(sort(mechanics2), 10)
+    labels = []
+    for key in top10_1.keys():
+        labels.append(key)
+    for key in top10_2.keys():
+        if key not in labels:
+            labels.append(key)
+    labels = sorted(labels)
+    dataset1 = { "title": username1, "values": [], "color": "75, 192, 192" }
+    dataset2 = { "title": username2, "values": [], "color": "255, 74, 243" }
+    for key in labels:
+        if key in mechanics1.keys():
+            dataset1["values"].append(mechanics1[key]/nb_games1*100)
+        else:
+            dataset1["values"].append(0.0)
+    for key in labels:
+        if key in mechanics2.keys():
+            dataset2["values"].append(mechanics2[key]/nb_games2*100)
+        else:
+            dataset2["values"].append(0.0)
+    return render_template('versus-chart.html', labels=labels, datasets=[dataset1, dataset2])
+
+@app.route('/versus/<username1>/<username2>')
+def versus_page(username1, username2):
+    return render_template("stats_loader.html", url="/api/versus/%s/%s" % (username1, username2), title="%s vs %s" % (username1, username2))
 
 
 @app.route('/api/release_year/<username>')
 def release_year_chart(username):
-    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published = fetch_user_data(username)
+    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published, nb_games = fetch_user_data(username)
     return generate_chart(release_dates_filled(year_published), "Release year", games_by_year_published, horizontal=False)
 
 @app.route('/release_year/<username>')
 def release_year_page(username):
-    return render_template("stats_loader.html", stats_name="release_year", username=username)
+    return render_template("stats_loader.html", url="/api/release_year/%s" % username, title=username)
 
 
 @app.route('/api/categories/<username>')
 def categories_chart(username):
-    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published = fetch_user_data(username)
+    categories, mechanics, year_published, games_by_mechanics, games_by_categories, games_by_year_published, nb_games = fetch_user_data(username)
     return generate_chart(sort(categories), "Categories", games_by_categories)
 
 @app.route('/categories/<username>')
 def categories_page(username):
-    return render_template("stats_loader.html", stats_name="categories", username=username)
+    return render_template("stats_loader.html", url="/api/categories/%s" % username, title=username)
 
 
 @app.route('/')

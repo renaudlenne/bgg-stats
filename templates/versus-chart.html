@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BGG stats generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js'></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/js/vex.combined.min.js"></script>
+    <script>vex.defaultOptions.className = 'vex-theme-os'</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.0.1/css/vex-theme-os.min.css" />
+</head>
+<body>
+    <div class="chart-container" style="position: relative; width:90vw">
+        <canvas id="chart"></canvas>
+    </div>
+    <script>
+        // bar chart data
+        var barData = {
+            labels : [{% for item in labels %}"{{item}}", {% endfor %}],
+        datasets : [{% for dataset in datasets %}
+            {
+                label: "{{dataset["title"]}}",
+                fill:true,
+                backgroundColor:"rgba({{dataset["color"]}}, 0.2)",
+                borderColor:"rgb({{dataset["color"]}})",
+                borderWidth:1,
+                data : [{% for item in dataset["values"] %}{{item}}, {% endfor %}]
+        },{% endfor %}
+        ]
+        }
+
+        // get bar chart canvas
+        var ctx = document.getElementById("chart").getContext("2d");
+
+        // draw bar chart
+        new Chart(ctx, {
+            type: 'radar',
+            data: barData
+        });
+
+    </script>
+</body>
+</html>

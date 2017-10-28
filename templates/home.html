@@ -16,19 +16,28 @@
         <div class="form-radio">
             <div class="radio">
                 <label>
-                    <input type="radio" name="stats_type" value="mechanics" checked="checked"/><i class="helper"></i>Group by mechanics
+                    <input type="radio" name="stats_type" value="mechanics" onclick="statsTypeChanged(this)" checked="checked"/><i class="helper"></i>Group by mechanics
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="stats_type" value="categories"/><i class="helper"></i>Group by categories
+                    <input type="radio" name="stats_type" value="categories" onclick="statsTypeChanged(this)"/><i class="helper"></i>Group by categories
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="stats_type" value="release_year"/><i class="helper"></i>Group by release year
+                    <input type="radio" name="stats_type" value="release_year" onclick="statsTypeChanged(this)"/><i class="helper"></i>Group by release year
                 </label>
             </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="stats_type" value="versus" onclick="statsTypeChanged(this)"/><i class="helper"></i>Collections comparison
+                </label>
+            </div>
+        </div>
+        <div class="form-group" id="versus_username_div" style="display: none;">
+            <input type="text" name="versus_username" id="versus_username"/>
+            <label class="control-label" for="versus_username">Other BGG username</label><i class="bar"></i>
         </div>
         <div class="button-container">
             <button class="button" type="submit"><span>Get some stats!</span></button>
@@ -42,10 +51,27 @@
         return false;
     }
 
+    function statsTypeChanged(elem) {
+        var versus_username_div = document.getElementById("versus_username_div");
+        var versus_username = document.getElementById("versus_username");
+        if(elem.value == 'versus') {
+            versus_username_div.style.display = 'block';
+            versus_username.required = 'required';
+        } else {
+            versus_username_div.style.display = 'none';
+            versus_username.removeAttribute("required");
+        }
+    }
+
     function getStats() {
         var username = document.getElementById("username").value;
         var stats_type = document.querySelector('input[name="stats_type"]:checked').value;
-        window.location.href = stats_type + "/" + username;
+        if (stats_type == 'versus') {
+            var versus_username = document.getElementById("versus_username").value;
+            window.location.href = stats_type + "/" + username + "/" + versus_username;
+        } else {
+            window.location.href = stats_type + "/" + username;
+        }
     }
 </script>
 </body>

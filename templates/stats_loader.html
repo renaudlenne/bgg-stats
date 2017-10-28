@@ -15,13 +15,13 @@
 <body onload="getStats();">
 <div class="container" style="min-height: 400px;">
     <div id="loader">
-        <h1>Generating statistics for {{username}}</h1>
+        <h1>Generating statistics for {{title}}</h1>
         <div class="loader">Loading...</div>
     </div>
 </div>
 <script language="javascript">
     function getStats() {
-        var url = "/api/{{stats_name}}/{{username}}";
+        var url = "{{url}}";
         var xmlhttp;
         xmlhttp=new XMLHttpRequest();
         xmlhttp.onreadystatechange=function()
