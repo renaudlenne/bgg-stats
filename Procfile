@@ -1,1 +1,1 @@
-web: python3 bgg-stats.py
+web: gunicorn app:app
