@@ -10,8 +10,8 @@ RUN echo "http://dl-8.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositor
     rm -r /root/.cache
 RUN  pip3 install flask certifi urllib3
 
-ADD bgg-stats.py /
-ADD templates /templates
-ADD static /static
+ADD bgg-stats/__init__.py /bgg-stats.py
+ADD bgg-stats/templates /templates
+ADD bgg-stats/static /static
 EXPOSE 5000
 CMD [ "python3", "./bgg-stats.py" ]
